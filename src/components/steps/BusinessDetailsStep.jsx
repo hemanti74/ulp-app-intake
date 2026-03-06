@@ -191,38 +191,40 @@ export default function BusinessDetailsStep({ data, onNext, onBack }) {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">City <span className="required">*</span></label>
-                        <input
-                            className={`form-input ${errors.businessCity ? 'error' : ''}`}
-                            placeholder="San Francisco"
-                            {...register('businessCity')}
-                        />
-                        <span className="form-error">{errors.businessCity?.message}</span>
-                    </div>
+                    <div className="form-grid-3 full-width">
+                        <div className="form-group">
+                            <label className="form-label">City <span className="required">*</span></label>
+                            <input
+                                className={`form-input ${errors.businessCity ? 'error' : ''}`}
+                                placeholder="San Francisco"
+                                {...register('businessCity')}
+                            />
+                            <span className="form-error">{errors.businessCity?.message}</span>
+                        </div>
 
-                    <div className="form-group">
-                        <label className="form-label">State <span className="required">*</span></label>
-                        <select
-                            className={`form-select ${errors.businessState ? 'error' : ''}`}
-                            {...register('businessState')}
-                        >
-                            <option value="">Select state</option>
-                            {US_STATES.map((s) => (
-                                <option key={`bus-${s}`} value={s}>{s}</option>
-                            ))}
-                        </select>
-                        <span className="form-error">{errors.businessState?.message}</span>
-                    </div>
+                        <div className="form-group">
+                            <label className="form-label">State <span className="required">*</span></label>
+                            <select
+                                className={`form-select ${errors.businessState ? 'error' : ''}`}
+                                {...register('businessState')}
+                            >
+                                <option value="">Select state</option>
+                                {US_STATES.map((s) => (
+                                    <option key={`bus-${s}`} value={s}>{s}</option>
+                                ))}
+                            </select>
+                            <span className="form-error">{errors.businessState?.message}</span>
+                        </div>
 
-                    <div className="form-group full-width">
-                        <label className="form-label">ZIP Code <span className="required">*</span></label>
-                        <input
-                            className={`form-input ${errors.businessZip ? 'error' : ''}`}
-                            placeholder="94105"
-                            {...register('businessZip')}
-                        />
-                        <span className="form-error">{errors.businessZip?.message}</span>
+                        <div className="form-group">
+                            <label className="form-label">ZIP Code <span className="required">*</span></label>
+                            <input
+                                className={`form-input ${errors.businessZip ? 'error' : ''}`}
+                                placeholder="94105"
+                                {...register('businessZip')}
+                            />
+                            <span className="form-error">{errors.businessZip?.message}</span>
+                        </div>
                     </div>
                 </div>
 

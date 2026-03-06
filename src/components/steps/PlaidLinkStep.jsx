@@ -105,7 +105,7 @@ export default function PlaidLinkStep({ data, onNext, onBack }) {
                     <div>
                         <strong>Why connect your bank?</strong>
                         <p>
-                            Lenders like OnDeck, Kabbage, Bluevine, and Lendio use bank data to
+                            We use bank data to
                             verify cash flow, accelerate approval, and reduce paperwork. Powered
                             by <strong>Plaid</strong> — trusted by 10,000+ financial institutions.
                         </p>

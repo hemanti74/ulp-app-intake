@@ -151,38 +151,40 @@ export default function OwnerDetailsStep({ data, onNext, onBack }) {
                         <span className="form-error">{errors.ownerAddress?.message}</span>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">City <span className="required">*</span></label>
-                        <input
-                            className={`form-input ${errors.ownerCity ? 'error' : ''}`}
-                            placeholder="Los Angeles"
-                            {...register('ownerCity')}
-                        />
-                        <span className="form-error">{errors.ownerCity?.message}</span>
-                    </div>
+                    <div className="form-grid-3 full-width">
+                        <div className="form-group">
+                            <label className="form-label">City <span className="required">*</span></label>
+                            <input
+                                className={`form-input ${errors.ownerCity ? 'error' : ''}`}
+                                placeholder="Los Angeles"
+                                {...register('ownerCity')}
+                            />
+                            <span className="form-error">{errors.ownerCity?.message}</span>
+                        </div>
 
-                    <div className="form-group">
-                        <label className="form-label">State <span className="required">*</span></label>
-                        <select
-                            className={`form-select ${errors.ownerState ? 'error' : ''}`}
-                            {...register('ownerState')}
-                        >
-                            <option value="">Select state</option>
-                            {US_STATES.map((s) => (
-                                <option key={s} value={s}>{s}</option>
-                            ))}
-                        </select>
-                        <span className="form-error">{errors.ownerState?.message}</span>
-                    </div>
+                        <div className="form-group">
+                            <label className="form-label">State <span className="required">*</span></label>
+                            <select
+                                className={`form-select ${errors.ownerState ? 'error' : ''}`}
+                                {...register('ownerState')}
+                            >
+                                <option value="">Select state</option>
+                                {US_STATES.map((s) => (
+                                    <option key={s} value={s}>{s}</option>
+                                ))}
+                            </select>
+                            <span className="form-error">{errors.ownerState?.message}</span>
+                        </div>
 
-                    <div className="form-group full-width">
-                        <label className="form-label">ZIP Code <span className="required">*</span></label>
-                        <input
-                            className={`form-input ${errors.ownerZip ? 'error' : ''}`}
-                            placeholder="90001"
-                            {...register('ownerZip')}
-                        />
-                        <span className="form-error">{errors.ownerZip?.message}</span>
+                        <div className="form-group">
+                            <label className="form-label">ZIP Code <span className="required">*</span></label>
+                            <input
+                                className={`form-input ${errors.ownerZip ? 'error' : ''}`}
+                                placeholder="90001"
+                                {...register('ownerZip')}
+                            />
+                            <span className="form-error">{errors.ownerZip?.message}</span>
+                        </div>
                     </div>
                 </div>
 

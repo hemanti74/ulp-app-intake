@@ -93,7 +93,8 @@ export default function IntakeWizard() {
 
     return (
         <div className="wizard-container glass-card wizard-wide">
-            <div className="wizard-header">
+            <div className="wizard-header" style={{ textAlign: 'center' }}>
+                <img src="/uncia-logo.svg" alt="Uncia Logo" style={{ maxWidth: '250px', marginBottom: '1.5rem', display: 'inline-block' }} />
                 <h1>Business Loan Application</h1>
                 <p>Complete the steps below to submit your application</p>
             </div>
