@@ -10,10 +10,10 @@ const ACCEPTED = {
 };
 
 const BUSINESS_DOCUMENTS = [
-    { key: 'businessTaxReturns', title: 'Business Tax Returns (2 years)', description: 'IRS Form 1120, 1120-S, or 1065', required: true },
-    { key: 'profitAndLoss', title: 'Profit & Loss Statement', description: 'Current year-to-date P&L', required: true },
-    { key: 'balanceSheet', title: 'Balance Sheet', description: 'Most recent balance sheet', required: true },
-    { key: 'bankStatements', title: 'Business Bank Statements (3 months)', description: 'Last 3 months of primary business account', required: true },
+    { key: 'businessTaxReturns', title: 'Business Tax Returns (2 years)', description: 'IRS Form 1120, 1120-S, or 1065', required: false },
+    { key: 'profitAndLoss', title: 'Profit & Loss Statement', description: 'Current year-to-date P&L', required: false },
+    { key: 'balanceSheet', title: 'Balance Sheet', description: 'Most recent balance sheet', required: false },
+    { key: 'bankStatements', title: 'Business Bank Statements (3 months)', description: 'Last 3 months of primary business account', required: false },
     { key: 'articlesOfIncorporation', title: 'Articles of Incorporation / Operating Agreement', description: 'Legal formation documents', required: false },
     { key: 'businessLicense', title: 'Business License', description: 'Current business license or permit', required: false },
 ];
@@ -107,17 +107,8 @@ export default function DocumentUploadStep({ data, onSubmit, onBack }) {
     };
 
     const handleSubmit = () => {
-        const newErrors = {};
-        BUSINESS_DOCUMENTS.forEach((doc) => {
-            if (doc.required && !files[doc.key]) {
-                newErrors[doc.key] = `${doc.title} is required`;
-            }
-        });
-
-        setErrors(newErrors);
-        if (Object.keys(newErrors).length === 0) {
-            onSubmit(files);
-        }
+        setErrors({});
+        onSubmit(files);
     };
 
     return (

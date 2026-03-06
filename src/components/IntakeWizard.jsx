@@ -16,7 +16,7 @@ const INITIAL_LOAN_BUSINESS = {
 const INITIAL_BUSINESS = {
     legalName: 'Acme Solutions LLC', dba: 'Acme Co', ein: '12-3456789', entityType: 'LLC',
     stateOfIncorporation: 'CA', dateEstablished: '2019-03-10', industry: 'Technology',
-    businessPhone: '(555) 987-6543', businessAddress: '456 Commerce Drive', businessSuite: 'Suite 200',
+    businessPhone: '(555) 987-6543', businessAddress: '456 Commerce Drive',
     businessCity: 'San Francisco', businessState: 'CA', businessZip: '94105',
 };
 

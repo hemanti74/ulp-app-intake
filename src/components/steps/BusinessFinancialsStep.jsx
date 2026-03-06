@@ -33,6 +33,14 @@ const schema = z.object({
 
 
 export default function BusinessFinancialsStep({ data, dateEstablished, onNext, onBack }) {
+    const formattedData = {
+        ...data,
+        annualRevenue: maskCurrencyInput(data?.annualRevenue),
+        monthlyRevenue: maskCurrencyInput(data?.monthlyRevenue),
+        annualNetProfit: maskCurrencyInput(data?.annualNetProfit),
+        outstandingDebtAmount: maskCurrencyInput(data?.outstandingDebtAmount),
+    };
+
     const {
         register,
         handleSubmit,
@@ -40,7 +48,7 @@ export default function BusinessFinancialsStep({ data, dateEstablished, onNext, 
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
-        defaultValues: data,
+        defaultValues: formattedData,
         mode: 'onTouched',
     });
 

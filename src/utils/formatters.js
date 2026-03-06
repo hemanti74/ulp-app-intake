@@ -58,8 +58,9 @@ export function parseNumber(value) {
 }
 
 export function maskCurrencyInput(value) {
-    if (!value) return '';
-    const number = value.replace(/\D/g, '');
+    if (value === null || value === undefined) return '';
+    const stringValue = String(value);
+    const number = stringValue.replace(/\D/g, '');
     if (!number) return '';
     return parseInt(number, 10).toLocaleString('en-US');
 }

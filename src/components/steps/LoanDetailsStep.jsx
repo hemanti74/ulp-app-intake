@@ -44,13 +44,18 @@ const businessSchema = z.object({
 
 /* ── Main Component ───────────────────────────────────── */
 export default function LoanDetailsStep({ data, onNext, onBack }) {
+    const formattedData = {
+        ...data,
+        loanAmount: maskCurrencyInput(data?.loanAmount),
+    };
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(businessSchema),
-        defaultValues: data,
+        defaultValues: formattedData,
         mode: 'onTouched',
     });
 

@@ -47,7 +47,6 @@ const schema = z.object({
     industry: z.string().min(1, 'Select industry'),
     businessPhone: z.string().min(1, 'Required').refine((val) => val.replace(/\D/g, '').length === 10, 'Enter a 10-digit phone number'),
     businessAddress: z.string().min(1, 'Required'),
-    businessSuite: z.string().optional(),
     businessCity: z.string().min(1, 'Required'),
     businessState: z.string().min(1, 'Select a state'),
     businessZip: z.string().regex(/^\d{5}$/, 'Enter a 5-digit ZIP code'),
@@ -180,15 +179,6 @@ export default function BusinessDetailsStep({ data, onNext, onBack }) {
                             {...register('businessAddress')}
                         />
                         <span className="form-error">{errors.businessAddress?.message}</span>
-                    </div>
-
-                    <div className="form-group full-width">
-                        <label className="form-label">Suite / Unit</label>
-                        <input
-                            className="form-input"
-                            placeholder="Suite 200 (optional)"
-                            {...register('businessSuite')}
-                        />
                     </div>
 
                     <div className="form-grid-3 full-width">

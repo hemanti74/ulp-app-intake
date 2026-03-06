@@ -39,6 +39,7 @@ export default function Summary({ data }) {
 
     return (
         <div className="success-container">
+            <img src="/uncia-logo.svg" alt="Uncia Logo" style={{ maxWidth: '250px', marginBottom: '1.5rem', display: 'inline-block' }} />
             <div className="success-icon">
                 <CheckCircle size={40} />
             </div>
@@ -58,7 +59,7 @@ export default function Summary({ data }) {
                     ['State of Incorporation', business.stateOfIncorporation],
                     ['Date Established', formatDate(business.dateEstablished)],
                     ['Business Phone', formatPhone(business.businessPhone)],
-                    ['Address', `${business.businessAddress}${business.businessSuite ? `, ${business.businessSuite}` : ''}, ${business.businessCity}, ${business.businessState} ${business.businessZip}`],
+                    ['Address', `${business.businessAddress}, ${business.businessCity}, ${business.businessState} ${business.businessZip}`],
                 ].filter(Boolean)}
             />
 
