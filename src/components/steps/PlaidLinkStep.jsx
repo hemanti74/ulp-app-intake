@@ -1,9 +1,6 @@
-import { useState, useCallback } from 'react';
-import { ArrowRight, ArrowLeft, Landmark, CheckCircle, Link2, AlertCircle } from 'lucide-react';
-
-// Note: In production, link_token comes from your backend via POST /link/token/create.
-// This is a demo component; Plaid Link requires a valid server-generated token to actually open.
-// The component architecture is production-ready — just swap the token source.
+import { useState, useCallback, useEffect } from 'react';
+import { usePlaidLink } from 'react-plaid-link';
+import { ArrowRight, ArrowLeft, Landmark, CheckCircle, Link2, AlertCircle, AlertTriangle } from 'lucide-react';
 
 export default function PlaidLinkStep({ data, onNext, onBack }) {
     const [bankData, setBankData] = useState(data || {
@@ -12,24 +9,68 @@ export default function PlaidLinkStep({ data, onNext, onBack }) {
         accountMask: '',
         accountType: '',
     });
-    const [isConnecting, setIsConnecting] = useState(false);
+    const [linkToken, setLinkToken] = useState('');
+    const [apiError, setApiError] = useState(false);
 
-    // Simulate Plaid Link flow for demo purposes
-    // In production: use usePlaidLink({ token: linkTokenFromBackend, onSuccess, onExit })
-    const handleConnectBank = useCallback(() => {
-        setIsConnecting(true);
+    // Use environment variable if deployed, otherwise fallback to local server
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
-        // Simulate a Plaid Link interaction (2-second delay)
-        setTimeout(() => {
-            setBankData({
-                connected: true,
-                institutionName: 'Chase Business Banking',
-                accountMask: '4829',
-                accountType: 'Business Checking',
+    // Call the backend to generate the link_token when step loads
+    useEffect(() => {
+        const createToken = async () => {
+            try {
+                // Point this to the dynamic API server
+                const res = await fetch(`${API_BASE_URL}/api/create_link_token`, {
+                    method: 'POST',
+                });
+                
+                if (!res.ok) throw new Error('Failed to fetch link token. Is the API server running?');
+                
+                const { link_token } = await res.json();
+                setLinkToken(link_token);
+                setApiError(false);
+            } catch (err) {
+                console.warn('Plaid Server offline or missing token:', err);
+                setApiError(true);
+            }
+        };
+
+        if (!data?.connected) {
+            createToken();
+        }
+    }, [data?.connected]);
+
+    const onSuccess = useCallback(async (public_token, metadata) => {
+        // Here you would normally quickly POST public_token to your backend exchange endpoint
+        // For our UI flow, we immediately pull the institution name from the Plaid metadata payload.
+        
+        try {
+            await fetch(`${API_BASE_URL}/api/exchange_public_token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ public_token }),
             });
-            setIsConnecting(false);
-        }, 2000);
+        } catch (err) {
+            console.error('Error exchanging public token. Server may be down, but continuing UI flow.', err);
+        }
+
+        setBankData({
+            connected: true,
+            institutionName: metadata.institution?.name || 'Linked Institution',
+            accountMask: metadata.accounts?.[0]?.mask || 'XXXX',
+            accountType: metadata.accounts?.[0]?.subtype || 'Checking',
+            skipped: false,
+        });
     }, []);
+
+    const config = {
+        token: linkToken,
+        onSuccess,
+        // onEvent: (eventName, metadata) => console.log(eventName, metadata),
+        // onExit: (err, metadata) => console.log(err, metadata),
+    };
+
+    const { open, ready } = usePlaidLink(config);
 
     const handleDisconnect = useCallback(() => {
         setBankData({
@@ -40,19 +81,15 @@ export default function PlaidLinkStep({ data, onNext, onBack }) {
         });
     }, []);
 
-    const handleNext = () => {
-        onNext(bankData);
-    };
-
-    const handleSkip = () => {
-        onNext({
-            connected: false,
-            institutionName: '',
-            accountMask: '',
-            accountType: '',
-            skipped: true,
-        });
-    };
+    const handleNext = () => onNext(bankData);
+    
+    const handleSkip = () => onNext({
+        connected: false,
+        institutionName: '',
+        accountMask: '',
+        accountType: '',
+        skipped: true,
+    });
 
     return (
         <div className="step-content" key="step-plaid">
@@ -80,30 +117,37 @@ export default function PlaidLinkStep({ data, onNext, onBack }) {
             {!bankData.connected ? (
                 <div className="plaid-connect-area">
                     <div className="plaid-connect-visual">
-                        <div className="plaid-logo-ring">
-                            <Link2 size={40} />
+                        <div className="plaid-logo-ring" style={{ border: apiError ? '2px dashed var(--danger-color)' : '' }}>
+                            {apiError ? <AlertTriangle size={32} color="var(--danger-color)" /> : <Link2 size={40} />}
                         </div>
                     </div>
 
                     <button
                         type="button"
                         className="btn btn-plaid"
-                        onClick={handleConnectBank}
-                        disabled={isConnecting}
+                        onClick={() => open()}
+                        disabled={!ready || apiError}
                         id="plaid-connect-btn"
+                        style={{ opacity: (!ready || apiError) ? 0.6 : 1 }}
                     >
-                        {isConnecting ? (
+                        {apiError ? (
+                            'Backend Offline'
+                        ) : !ready ? (
                             <>
-                                <span className="plaid-spinner" />
-                                Connecting…
+                                <span className="plaid-spinner" /> Initialize Plaid…
                             </>
                         ) : (
                             <>
-                                <Landmark size={18} />
-                                Connect with Plaid
+                                <Landmark size={18} /> Connect with Plaid
                             </>
                         )}
                     </button>
+                    
+                    {apiError && (
+                        <p className="form-error" style={{ textAlign: 'center', marginTop: '10px' }}>
+                            Start the Server: Please update the .env file with your Plaid keys and run `node index.js` in the `los-api` folder to test the link configuration.
+                        </p>
+                    )}
 
                     <p className="plaid-security-note">
                         🔒 Your credentials are never shared with us. Bank-level 256-bit encryption.
@@ -118,12 +162,12 @@ export default function PlaidLinkStep({ data, onNext, onBack }) {
                     <div className="plaid-connected-details">
                         <div className="plaid-detail-row">
                             <span className="plaid-detail-label">Institution</span>
-                            <span className="plaid-detail-value">{bankData.institutionName}</span>
+                            <span className="plaid-detail-value" style={{ fontWeight: 'bold' }}>{bankData.institutionName}</span>
                         </div>
                         <div className="plaid-detail-row">
                             <span className="plaid-detail-label">Account</span>
                             <span className="plaid-detail-value">
-                                {bankData.accountType} ••••{bankData.accountMask}
+                                {bankData.accountType.charAt(0).toUpperCase() + bankData.accountType.slice(1)} ••••{bankData.accountMask}
                             </span>
                         </div>
                     </div>
